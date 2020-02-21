@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="S_Prov" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="org.yesworkflow.cli.YesWorkflowCLI" />
+    <module name="yesworkflow" />
+    <option name="PROGRAM_PARAMETERS" value="extract instances/small/inst_s.py -c extract.provenancefile=instances/out/inst_s_prov.txt" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="org.yesworkflow.cli.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

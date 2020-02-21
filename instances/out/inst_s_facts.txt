@@ -1,0 +1,58 @@
+
+% FACT: extract_source(source_id, source_path).
+extract_source(1, 'instances/small/inst_s.py').
+
+% FACT: annotation(annotation_id, source_id, line_number, tag, keyword, value).
+annotation(1, 1, 112, 'begin', '@begin', 'inst_s.main').
+annotation(2, 1, 112, 'desc', '@desc', 'Processes a list of wind speed measurements').
+annotation(3, 1, 114, 'in', '@in', 'data').
+annotation(4, 1, 114, 'desc', '@desc', 'CSV file with country, code, city, wind_speed as columns').
+annotation(5, 1, 115, 'out', '@out', 'summary_by_country').
+annotation(6, 1, 115, 'uri', '@uri', 'file:by_country.json').
+annotation(7, 1, 116, 'out', '@out', 'summary_overall').
+annotation(8, 1, 116, 'uri', '@uri', 'file:overall.json').
+annotation(9, 1, 129, 'begin', '@begin', 'read_file').
+annotation(10, 1, 129, 'desc', '@desc', 'read CSV data as NamedTuple').
+annotation(11, 1, 130, 'in', '@in', 'data').
+annotation(12, 1, 131, 'out', '@out', 'data_parsed').
+annotation(13, 1, 131, 'desc', '@desc', 'CSV data as NamedTuple').
+annotation(14, 1, 137, 'end', '@end', 'read_file').
+annotation(15, 1, 147, 'begin', '@begin', 'group_data_by_country').
+annotation(16, 1, 147, 'desc', '@desc', 'split data by country,\nreturning list of sublists').
+annotation(17, 1, 148, 'param', '@param', 'data_parsed').
+annotation(18, 1, 149, 'out', '@out', 'data_by_country').
+annotation(19, 1, 153, 'end', '@end', 'group_data_by_country').
+annotation(20, 1, 157, 'begin', '@begin', 'get_top_ten_by_country').
+annotation(21, 1, 157, 'desc', '@desc', '10 countries with highest\navg wind speed').
+annotation(22, 1, 158, 'param', '@param', 'data_by_country').
+annotation(23, 1, 159, 'out', '@out', 'country_top_ten').
+annotation(24, 1, 163, 'end', '@end', 'get_top_ten_by_country').
+annotation(25, 1, 167, 'begin', '@begin', 'get_top_ten_overall').
+annotation(26, 1, 167, 'desc', '@desc', 'sort by wind speed,\nreturn first 10 items').
+annotation(27, 1, 168, 'param', '@param', 'data_parsed').
+annotation(28, 1, 169, 'out', '@out', 'overall_top_ten').
+annotation(29, 1, 173, 'end', '@end', 'get_top_ten_overall').
+annotation(30, 1, 182, 'begin', '@begin', 'persist_top_ten_by_country').
+annotation(31, 1, 183, 'in', '@in', 'country_top_ten').
+annotation(32, 1, 184, 'out', '@out', 'summary_by_country').
+annotation(33, 1, 184, 'uri', '@uri', 'file:by_country.json').
+annotation(34, 1, 188, 'end', '@end', 'persist_top_ten_by_country').
+annotation(35, 1, 192, 'begin', '@begin', 'persist_top_ten_overall').
+annotation(36, 1, 193, 'param', '@param', 'overall_top_ten').
+annotation(37, 1, 194, 'out', '@out', 'summary_overall').
+annotation(38, 1, 194, 'uri', '@uri', 'file:overall.json').
+annotation(39, 1, 198, 'end', '@end', 'persist_top_ten_overall').
+annotation(40, 1, 204, 'end', '@end', 'inst_s.main').
+
+% FACT: annotation_qualifies(qualifying_annotation_id, primary_annotation_id).
+annotation_qualifies(2, 1).
+annotation_qualifies(4, 3).
+annotation_qualifies(6, 5).
+annotation_qualifies(8, 7).
+annotation_qualifies(10, 9).
+annotation_qualifies(13, 12).
+annotation_qualifies(16, 15).
+annotation_qualifies(21, 20).
+annotation_qualifies(26, 25).
+annotation_qualifies(33, 32).
+annotation_qualifies(38, 37).
