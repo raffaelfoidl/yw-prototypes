@@ -1,7 +1,12 @@
 package org.yesworkflow.annotations;
 
+import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.StatementOrBundle;
 import org.yesworkflow.YWKeywords;
 import org.yesworkflow.YWKeywords.Tag;
+
+import java.util.function.Function;
 
 public class UriAnnotation extends Qualification {
     
@@ -15,6 +20,11 @@ public class UriAnnotation extends Qualification {
     
     public String toString() {
         return value;
+    }
+
+    @Override
+    public StatementOrBundle getProvenanceInfo(ProvFactory provFactory, Function<String, QualifiedName> qualifierMethod) {
+        return null;
     }
 }
 

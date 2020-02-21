@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="S_Facts" type="Application" factoryName="Application">
+  <configuration default="false" name="L_Prov" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="org.yesworkflow.cli.YesWorkflowCLI" />
     <module name="yesworkflow" />
-    <option name="PROGRAM_PARAMETERS" value="extract instances/small/inst_s.py -c extract.factsfile=instances/out/inst_s_facts.txt" />
+    <option name="PROGRAM_PARAMETERS" value="extract instances/large/inst_l.py -c extract.provenancefile=instances/out/inst_l_prov.txt" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="org.yesworkflow.cli.*" />
