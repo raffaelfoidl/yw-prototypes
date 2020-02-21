@@ -19,20 +19,7 @@ import org.yesworkflow.Language;
 import org.yesworkflow.LanguageModel;
 import org.yesworkflow.YWKeywords;
 import org.yesworkflow.YWKeywords.Tag;
-import org.yesworkflow.annotations.Annotation;
-import org.yesworkflow.annotations.As;
-import org.yesworkflow.annotations.Begin;
-import org.yesworkflow.annotations.Call;
-import org.yesworkflow.annotations.Desc;
-import org.yesworkflow.annotations.End;
-import org.yesworkflow.annotations.FileUri;
-import org.yesworkflow.annotations.In;
-import org.yesworkflow.annotations.Log;
-import org.yesworkflow.annotations.Out;
-import org.yesworkflow.annotations.Param;
-import org.yesworkflow.annotations.Qualification;
-import org.yesworkflow.annotations.Return;
-import org.yesworkflow.annotations.UriAnnotation;
+import org.yesworkflow.annotations.*;
 import org.yesworkflow.config.YWConfiguration;
 import org.yesworkflow.db.Table;
 import org.yesworkflow.db.YesWorkflowDB;
@@ -163,16 +150,16 @@ public class DefaultExtractor implements Extractor {
         return extractFacts;
     }
 
-    public String getProvenance() throws IOException {
+    public void getProvenance() throws IOException {
         if (extractProvenance == null) {
-            extractProvenance = new ExtractProvenance(ywdb, this.queryEngine, allAnnotations).build().provenance();
+            List<AnnotationBlock> abs = AnnotationBlockBuilder.build(allAnnotations).get();
+            ExtractProvenance ep = new ExtractProvenance(abs, provenanceFile);
+            ep.saveFile();
         }
-        return extractProvenance;
     }
 
     @Override
     public DefaultExtractor extract() throws Exception {
-
         extractCommentsFromSources();
         writeCommentListing();
         extractAnnotations();
@@ -187,7 +174,7 @@ public class DefaultExtractor implements Extractor {
         }
 
         if (provenanceFile != null) {
-            writeTextToFileOrStdout(provenanceFile, getProvenance());
+            getProvenance();
         }
 
         return this;
