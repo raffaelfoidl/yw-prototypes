@@ -4,8 +4,8 @@ import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.*;
 import org.yesworkflow.annotations.Annotation;
-import org.yesworkflow.annotations.AnnotationBlock;
-import org.yesworkflow.annotations.AnnotationLine;
+import org.yesworkflow.annotations.util.AnnotationBlock;
+import org.yesworkflow.annotations.util.AnnotationLine;
 
 import java.util.*;
 

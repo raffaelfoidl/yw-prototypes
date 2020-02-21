@@ -1,6 +1,8 @@
 package org.yesworkflow.extract;
 
 import org.yesworkflow.annotations.*;
+import org.yesworkflow.annotations.util.AnnotationBlock;
+import org.yesworkflow.annotations.util.AnnotationLine;
 
 import java.util.ArrayList;
 import java.util.List;

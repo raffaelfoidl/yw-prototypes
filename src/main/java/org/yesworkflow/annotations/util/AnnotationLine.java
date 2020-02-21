@@ -1,4 +1,6 @@
-package org.yesworkflow.annotations;
+package org.yesworkflow.annotations.util;
+
+import org.yesworkflow.annotations.Annotation;
 
 import java.util.ArrayList;
 import java.util.List;
