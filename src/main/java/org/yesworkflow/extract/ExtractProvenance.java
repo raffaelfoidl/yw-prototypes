@@ -3,10 +3,7 @@ package org.yesworkflow.extract;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.*;
-import org.yesworkflow.annotations.Annotation;
-import org.yesworkflow.annotations.Call;
-import org.yesworkflow.annotations.In;
-import org.yesworkflow.annotations.Out;
+import org.yesworkflow.annotations.*;
 import org.yesworkflow.annotations.util.AnnotationBlock;
 import org.yesworkflow.annotations.util.AnnotationLine;
 import org.yesworkflow.exceptions.YWToolUsageException;
@@ -107,27 +104,25 @@ class ExtractProvenance {
             for (AnnotationLine line : block.getLines()) {
                 for (Annotation annotation : line.getAnnotations()) {
                     StatementOrBundle prov = annotation.getProvenanceInfo(provFactory, this::qualifiedName);
-                    if (prov == null)
+                    if (prov == null && !(annotation instanceof Log))
                         continue;
 
-                    if (prov instanceof Identifiable) {
+                    if (prov instanceof Identifiable)
                         handleIdentifiable(elements, annotation, prov);
-                    } else if (prov instanceof AlternateOf) {
+                    else if (prov instanceof AlternateOf)
                         anonymousElements.add(prov);
-                    }
 
-                    // Return annotation extends Out => no need for extra disjunctive filter term
-                    if (annotation instanceof Out) {
+                    if (annotation instanceof Out) // Return extends Out => no extra disjunction necessary
                         handleOut(elements, block, prov);
-                    }
 
-                    // Param annotation extends In => no need for extra disjunctive filter term
-                    if (annotation instanceof In) {
+                    if (annotation instanceof In) // Param extends In => no extra disjunction necessary
                         handleIn(elements, block, prov);
-                    }
 
-                    if (annotation instanceof Call) {
+                    if (annotation instanceof Call)
                         handleCall(elements, block, prov);
+
+                    if (annotation instanceof Log) {
+                        handleLog(elements, block, annotation);
                     }
                 }
             }
@@ -139,6 +134,17 @@ class ExtractProvenance {
         doc.setNamespace(namespace);
 
         return doc;
+    }
+
+    /**
+     * Add content of Log-annotation to current activity as label
+     */
+    private void handleLog(Map<QualifiedName, StatementOrBundle> elements, AnnotationBlock block, Annotation annotation) {
+        QualifiedName activityId = qualifiedName(block.getBegin().value());
+        StatementOrBundle activity = elements.get(activityId);
+
+        if ((activity instanceof Activity))
+            addDescriptionLabel("log: " + annotation.value(), ((Activity) activity).getLabel());
     }
 
     /**
@@ -221,17 +227,25 @@ class ExtractProvenance {
     }
 
     private void addLabels(List<LangString> provLabels, List<LangString> currentLabels) {
+        if (currentLabels == null)
+            currentLabels = new ArrayList<>();
+
         // only add labels that have not yet been stored (Object.equals() with streams is necessary since
         // difference implementations of LangString are not equal despite having the same underlying string value)
-        if (provLabels != null && provLabels.size() > 0)
+        if (provLabels != null && provLabels.size() > 0) {
+            List<LangString> finalCurrentLabels = currentLabels;
             provLabels.stream().filter(x ->
-                    currentLabels.stream().noneMatch(y -> Objects.equals(y.getValue(), x.getValue())))
+                    finalCurrentLabels.stream().noneMatch(y -> Objects.equals(y.getValue(), x.getValue())))
                     .forEach(currentLabels::add);
+        }
     }
 
     private void addDescriptionLabel(String annotationDesc, List<LangString> currentLabels) {
         if (annotationDesc == null)
             return;
+
+        if (currentLabels == null)
+            currentLabels = new ArrayList<>();
 
         // only add description as label if has not yet been stored (Object.equals() with streams is necessary since
         // difference implementations of LangString are not equal despite having the same underlying string value)

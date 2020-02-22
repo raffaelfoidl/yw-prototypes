@@ -339,6 +339,8 @@ public class DefaultExtractor implements Extractor {
                         annotation = new In(id, sourceId, lineNumber, annotationString);
                         break;
                     case LOG:
+                        if (!(primaryAnnotation instanceof Out))
+                            continue;
                         annotation = new Log(id, sourceId, lineNumber, annotationString, (Out) primaryAnnotation);
                         break;
                     case OUT:

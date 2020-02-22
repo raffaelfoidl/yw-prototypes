@@ -11,6 +11,8 @@ def greet_user(greeting, emphasis='!', count=1):
     # @in emphasis @as provided_emphasis
     # @param count @as emphasis_count
     # @out greeting @as emphasized_greeting @desc emphasized greeting as output
+    #   @log {emphasis_count} non-negative, iterating
+    #   @log completed iterating after {emphasis_count} steps
     if (count > 0):
         for i in range(0, count):
             greeting = greeting + emphasis
