@@ -74,37 +74,32 @@ class ExtractProvenance {
         }
     }
 
+    private String escapeForQName(String input) {
+        // escaped because replaceAll takes regex
+        String[] forbiddenChars = new String[]{"=", "'", "\\(", "\\)", ",", "_", ":", ";", "\\[", "\\]", "/",
+                "\\\\", "\\?", "@", "~", "&", "\\+", "\\*", "#", "\\$", "\\^", "!", "<", ">", "%"};
+        String returnValue = input;
+
+        for (String forbiddenChar : forbiddenChars) {
+            returnValue = returnValue.replaceAll(forbiddenChar, "_");
+        }
+
+        return returnValue;
+    }
+
     private QualifiedName qualifiedName(String name) {
-        return namespace.qualifiedName(this.namespacePrefix, name, provFactory);
+        return namespace.qualifiedName(this.namespacePrefix, escapeForQName(name), provFactory);
     }
 
     private QualifiedName qualifiedName(String name1, String name2, String connector) {
-        return namespace.qualifiedName(this.namespacePrefix, String.format("%s__%s__%s", name1, connector, name2), provFactory);
-    }
-
-    private WasGeneratedBy getGen(StatementOrBundle entity, AnnotationBlock activityBlock) {
-        if (!(entity instanceof Entity))
-            return null;
-
-        QualifiedName entityId = ((Entity) entity).getId();
-        QualifiedName activityId = qualifiedName(activityBlock.getBegin().value());
-        QualifiedName genId = qualifiedName(entityId.getLocalPart(), activityId.getLocalPart(), "GEN");
-        return provFactory.newWasGeneratedBy(genId, entityId, activityId);
-    }
-
-    private Used getUse(StatementOrBundle entity, AnnotationBlock activityBlock) {
-        if (!(entity instanceof Entity))
-            return null;
-
-        QualifiedName entityId = ((Entity) entity).getId();
-        QualifiedName activityId = qualifiedName(activityBlock.getBegin().value());
-        QualifiedName genId = qualifiedName(entityId.getLocalPart(), activityId.getLocalPart(), "USE");
-        return provFactory.newUsed(genId, activityId, entityId);
+        return namespace.qualifiedName(this.namespacePrefix, String.format("%s__%s__%s",
+                escapeForQName(name1), connector, escapeForQName(name2)), provFactory);
     }
 
     private Document createDocument() {
-        // use map in order to guarantee uniqueness by ID (QName)
+        // use map/set in order to guarantee uniqueness by ID (qualified name)
         Map<QualifiedName, StatementOrBundle> elements = new HashMap<>(); // contains all
+        Set<StatementOrBundle> anonymousElements = new HashSet<>(); // contains those that do not implement Identifiable
 
         // convert found annotations to provenance activities (methods/tasks) and entities (in/out/return parameters)
         for (AnnotationBlock block : this.blocks) {
@@ -114,38 +109,108 @@ class ExtractProvenance {
                     if (prov == null)
                         continue;
 
-                    QualifiedName key = ((Identifiable) prov).getId();
-                    StatementOrBundle current = elements.getOrDefault(key, null);
-                    // only potentially overwrite value already stored if the new one contains a label or the one
-                    // currently stored does not
-                    if (current == null || annotation.description() != null ||
-                            (current instanceof HasLabel && ((HasLabel) current).getLabel() == null)) {
-                        elements.put(key, prov);
+                    if (prov instanceof Identifiable) {
+                        handleIdentifiable(elements, annotation, prov);
+                    } else if (prov instanceof AlternateOf) {
+                        anonymousElements.add(prov);
                     }
 
-                    // connect outputs with activities
                     // Return annotation extends Out => no need for extra disjunctive filter term
                     if (annotation instanceof Out) {
-                        WasGeneratedBy gen = getGen(prov, block);
-                        elements.put(gen.getId(), gen);
+                        handleOut(elements, block, prov);
                     }
 
-                    // connect inputs with activities
                     // Param annotation extends In => no need for extra disjunctive filter term
                     if (annotation instanceof In) {
-                        Used use = getUse(prov, block);
-                        elements.put(use.getId(), use);
+                        handleIn(elements, block, prov);
                     }
                 }
             }
         }
 
-
         Document doc = provFactory.newDocument();
         doc.getStatementOrBundle().addAll(elements.values());
+        doc.getStatementOrBundle().addAll(anonymousElements);
         doc.setNamespace(namespace);
 
         return doc;
+    }
+
+    /**
+     * Connect outputs with activities.
+     */
+    private void handleOut(Map<QualifiedName, StatementOrBundle> elements, AnnotationBlock block, StatementOrBundle prov) {
+        if (!(prov instanceof Entity))
+            return;
+
+        QualifiedName entityId = ((Entity) prov).getId();
+        QualifiedName activityId = qualifiedName(block.getBegin().value());
+        QualifiedName genId = qualifiedName(entityId.getLocalPart(), activityId.getLocalPart(), "GEN");
+
+        WasGeneratedBy gen = provFactory.newWasGeneratedBy(genId, entityId, activityId);
+        elements.put(gen.getId(), gen);
+    }
+
+    /**
+     * Connect inputs with activities.
+     */
+    private void handleIn(Map<QualifiedName, StatementOrBundle> elements, AnnotationBlock block, StatementOrBundle prov) {
+        if (!(prov instanceof Entity))
+            return;
+
+        QualifiedName entityId = ((Entity) prov).getId();
+        QualifiedName activityId = qualifiedName(block.getBegin().value());
+        QualifiedName genId = qualifiedName(entityId.getLocalPart(), activityId.getLocalPart(), "USE");
+
+        Used use = provFactory.newUsed(genId, activityId, entityId);
+        elements.put(use.getId(), use);
+    }
+
+    private void handleIdentifiable(Map<QualifiedName, StatementOrBundle> elements, Annotation annotation, StatementOrBundle prov) {
+        QualifiedName key = ((Identifiable) prov).getId();
+        StatementOrBundle current = elements.getOrDefault(key, null);
+
+        // if no element with this ID stored, add to map regularly
+        if (current == null) {
+            elements.put(key, prov);
+
+        } else if (current instanceof HasLabel) {
+            HasLabel currentWithLabel = (HasLabel) current;
+
+            /*  if element currently stored with this ID does not have a label, replace it by this one
+                if current provenance info has a label, add them as well as the current description
+                else, add to map regularly */
+            if (currentWithLabel.getLabel() == null || currentWithLabel.getLabel().size() < 1) {
+                elements.put(key, prov);
+
+            } else if (prov instanceof HasLabel) {
+                addLabels(((HasLabel) prov).getLabel(), currentWithLabel.getLabel());
+                addDescriptionLabel(annotation.description(), currentWithLabel.getLabel());
+
+            } else {
+                elements.put(key, prov);
+            }
+
+            // if there is an element with this ID stored, but without description, replace it by this one
+        } else if (annotation.description() != null) {
+            elements.put(key, prov);
+        }
+    }
+
+    private void addLabels(List<LangString> provLabels, List<LangString> currentLabels) {
+        if (provLabels != null && provLabels.size() > 0)
+            provLabels.stream().filter(x ->
+                    currentLabels.stream().noneMatch(y -> Objects.equals(y.getValue(), x.getValue())))
+                    .forEach(currentLabels::add);
+    }
+
+    private void addDescriptionLabel(String annotationDesc, List<LangString> currentLabels) {
+        if (annotationDesc == null)
+            return;
+
+        LangString descLabel = new org.openprovenance.prov.vanilla.LangString(annotationDesc);
+        if (currentLabels.stream().noneMatch(x -> Objects.equals(x.getValue(), descLabel.getValue())))
+            currentLabels.add(descLabel);
     }
 
     void saveFile() {

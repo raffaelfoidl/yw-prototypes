@@ -60,22 +60,10 @@ public abstract class Annotation {
         return (description != null) ? description.value : null;
     }
 
-    protected String escapeForQName(String input) {
-        // escaped because replaceAll takes regex
-        String[] forbiddenChars = new String[]{"=", "'", "\\(", "\\)", ",", "_", ":", ";", "\\[", "\\]", "/",
-                "\\\\", "\\?", "@", "~", "&", "\\+", "\\*", "#", "\\$", "\\^", "!", "<", ">", "%"};
-        String returnValue = input;
-
-        for (String forbiddenChar : forbiddenChars) {
-            returnValue = returnValue.replaceAll(forbiddenChar, "_");
-        }
-
-        return returnValue;
-    }
 
     public StatementOrBundle getProvenanceInfo(ProvFactory provFactory, Function<String, QualifiedName> qualifierMethod) {
         String desc = this.description() != null ? this.description().replaceAll("\\\\n", " ") : null;
-        return provFactory.newActivity(qualifierMethod.apply(escapeForQName(this.value().trim())), desc);
+        return provFactory.newActivity(qualifierMethod.apply(this.value().trim()), desc);
     }
 
 }
