@@ -47,6 +47,9 @@ public class DefaultExtractor implements Extractor {
     private String commentListingPath;
     private String factsFile = null;
     private String provenanceFile = null;
+    private String provenanceFormat = null;
+    private String provenanceNamespace = null;
+    private String provenancePrefix = null;
     private String skeletonFile = null;
     private String skeleton = null;
     private Map<String, String> extractFacts = null;
@@ -108,6 +111,12 @@ public class DefaultExtractor implements Extractor {
             factsFile = (String) value;
         } else if (key.equalsIgnoreCase("provenanceFile")) {
             provenanceFile = (String) value;
+        } else if (key.equalsIgnoreCase("provenanceFormat")) {
+            provenanceFormat = (String) value;
+        } else if (key.equalsIgnoreCase("provenancens")) {
+            provenanceNamespace = (String) value;
+        } else if (key.equalsIgnoreCase("provenanceprefix")) {
+            provenancePrefix = (String) value;
         } else if (key.equalsIgnoreCase("skeletonfile")) {
             skeletonFile = (String) value;
         } else if (key.equalsIgnoreCase("queryengine")) {
@@ -150,10 +159,11 @@ public class DefaultExtractor implements Extractor {
         return extractFacts;
     }
 
-    public void getProvenance() throws IOException {
+    public void getProvenance() throws YWToolUsageException {
         if (extractProvenance == null) {
             List<AnnotationBlock> abs = AnnotationBlockBuilder.build(allAnnotations).get();
-            ExtractProvenance ep = new ExtractProvenance(abs, provenanceFile);
+            ExtractProvenance ep = new ExtractProvenance(abs,
+                    provenanceFile, provenanceFormat, provenanceNamespace, provenancePrefix);
             ep.saveFile();
         }
     }

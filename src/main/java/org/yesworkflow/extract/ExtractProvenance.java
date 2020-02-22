@@ -8,36 +8,78 @@ import org.yesworkflow.annotations.In;
 import org.yesworkflow.annotations.Out;
 import org.yesworkflow.annotations.util.AnnotationBlock;
 import org.yesworkflow.annotations.util.AnnotationLine;
+import org.yesworkflow.exceptions.YWToolUsageException;
 
 import java.util.*;
 
 class ExtractProvenance {
 
-    private static final String YW_NS = "http://yesworkflow.org/";
-    private static final String YW_PREFIX = "yw";
-
-
     private final ProvFactory provFactory;
+    private final String namespacePrefix;
+
+
     private final Namespace namespace;
     private final List<AnnotationBlock> blocks;
-    private final String filePath;
+    private final String file;
+    private final String fileExtension;
+    private final Formats.ProvFormat fileFormat;
 
-    ExtractProvenance(List<AnnotationBlock> blocks, String filePath) {
+    ExtractProvenance(List<AnnotationBlock> blocks, String file, String format, String namespace, String prefix) throws YWToolUsageException {
+        List<String> allowedFormats = Arrays.asList("PROVN", "TURTLE", "XML", "TRIG", "JSON", "PDF", "SVG", "DOT", "PNG", "JPEG");
+        if (!allowedFormats.contains(format.toUpperCase())) {
+            throw new YWToolUsageException("Invalid provenance output format '" + format.toUpperCase() + "'");
+        }
+
+        this.fileFormat = Formats.ProvFormat.valueOf(format.toUpperCase());
+        this.fileExtension = getExtension(this.fileFormat);
         this.blocks = blocks;
-        this.filePath = filePath;
+        this.file = file;
         this.provFactory = InteropFramework.getDefaultFactory();
+        this.namespacePrefix = prefix;
 
-        namespace = new Namespace();
-        namespace.addKnownNamespaces();
-        namespace.register(YW_PREFIX, YW_NS);
+
+        this.namespace = new Namespace();
+        this.namespace.addKnownNamespaces();
+        this.namespace.register(prefix, namespace);
+    }
+
+    private String getExtension(Formats.ProvFormat outputFormat) throws YWToolUsageException {
+        switch (outputFormat) {
+            case PROVN:
+                return ".pn";
+            case XML:
+                return ".xml";
+            case TURTLE:
+                return ".ttl";
+            case RDFXML:
+                throw new YWToolUsageException("attempted to write to unsupported format '" + Formats.ProvFormat.RDFXML + "'");
+            case TRIG:
+                return ".trig";
+            case JSON:
+                return ".json";
+            case JSONLD:
+                throw new YWToolUsageException("attempted to write to unsupported format '" + Formats.ProvFormat.JSONLD + "'");
+            case DOT:
+                return ".gv";
+            case JPEG:
+                return ".jpeg";
+            case PNG:
+                return ".png";
+            case SVG:
+                return ".svg";
+            case PDF:
+                return ".pdf";
+            default:
+                throw new YWToolUsageException("attempted to write to unsupported format '<none>'");
+        }
     }
 
     private QualifiedName qualifiedName(String name) {
-        return namespace.qualifiedName(YW_PREFIX, name, provFactory);
+        return namespace.qualifiedName(this.namespacePrefix, name, provFactory);
     }
 
     private QualifiedName qualifiedName(String name1, String name2, String connector) {
-        return namespace.qualifiedName(YW_PREFIX, String.format("%s__%s__%s", name1, connector, name2), provFactory);
+        return namespace.qualifiedName(this.namespacePrefix, String.format("%s__%s__%s", name1, connector, name2), provFactory);
     }
 
     private WasGeneratedBy getGen(StatementOrBundle entity, AnnotationBlock activityBlock) {
@@ -109,9 +151,7 @@ class ExtractProvenance {
     void saveFile() {
         InteropFramework interopFx = new InteropFramework();
         Document provenance = this.createDocument();
-
-        interopFx.writeDocument(System.out, Formats.ProvFormat.PROVN, provenance);
-        interopFx.writeDocument(this.filePath.replace(".txt", ".pdf"), Formats.ProvFormat.PDF, provenance);
+        interopFx.writeDocument(String.join("", this.file, this.fileExtension), this.fileFormat, provenance);
     }
 
 }
