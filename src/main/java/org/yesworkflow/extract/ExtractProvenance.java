@@ -4,6 +4,7 @@ import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.*;
 import org.yesworkflow.annotations.Annotation;
+import org.yesworkflow.annotations.Call;
 import org.yesworkflow.annotations.In;
 import org.yesworkflow.annotations.Out;
 import org.yesworkflow.annotations.util.AnnotationBlock;
@@ -124,6 +125,10 @@ class ExtractProvenance {
                     if (annotation instanceof In) {
                         handleIn(elements, block, prov);
                     }
+
+                    if (annotation instanceof Call) {
+                        handleCall(elements, block, prov);
+                    }
                 }
             }
         }
@@ -134,6 +139,21 @@ class ExtractProvenance {
         doc.setNamespace(namespace);
 
         return doc;
+    }
+
+    /**
+     * Connect called functions/methods with their callers.
+     */
+    private void handleCall(Map<QualifiedName, StatementOrBundle> elements, AnnotationBlock block, StatementOrBundle prov) {
+        if (!(prov instanceof Entity))
+            return;
+
+        QualifiedName entityId = ((Entity) prov).getId();
+        QualifiedName activityId = qualifiedName(block.getBegin().value());
+        QualifiedName genId = qualifiedName(entityId.getLocalPart(), activityId.getLocalPart(), "CALL");
+
+        Used use = provFactory.newUsed(genId, activityId, entityId);
+        elements.put(use.getId(), use);
     }
 
     /**
@@ -166,6 +186,9 @@ class ExtractProvenance {
         elements.put(use.getId(), use);
     }
 
+    /**
+     * Handle provenance information elements that implement the Identifiable interface.
+     */
     private void handleIdentifiable(Map<QualifiedName, StatementOrBundle> elements, Annotation annotation, StatementOrBundle prov) {
         QualifiedName key = ((Identifiable) prov).getId();
         StatementOrBundle current = elements.getOrDefault(key, null);
@@ -185,7 +208,7 @@ class ExtractProvenance {
 
             } else if (prov instanceof HasLabel) {
                 addLabels(((HasLabel) prov).getLabel(), currentWithLabel.getLabel());
-                addDescriptionLabel(annotation.description(), currentWithLabel.getLabel());
+                addDescriptionLabel(annotation.descriptionClean(), currentWithLabel.getLabel());
 
             } else {
                 elements.put(key, prov);
@@ -198,6 +221,8 @@ class ExtractProvenance {
     }
 
     private void addLabels(List<LangString> provLabels, List<LangString> currentLabels) {
+        // only add labels that have not yet been stored (Object.equals() with streams is necessary since
+        // difference implementations of LangString are not equal despite having the same underlying string value)
         if (provLabels != null && provLabels.size() > 0)
             provLabels.stream().filter(x ->
                     currentLabels.stream().noneMatch(y -> Objects.equals(y.getValue(), x.getValue())))
@@ -208,6 +233,8 @@ class ExtractProvenance {
         if (annotationDesc == null)
             return;
 
+        // only add description as label if has not yet been stored (Object.equals() with streams is necessary since
+        // difference implementations of LangString are not equal despite having the same underlying string value)
         LangString descLabel = new org.openprovenance.prov.vanilla.LangString(annotationDesc);
         if (currentLabels.stream().noneMatch(x -> Objects.equals(x.getValue(), descLabel.getValue())))
             currentLabels.add(descLabel);

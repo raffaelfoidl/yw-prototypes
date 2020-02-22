@@ -19,9 +19,14 @@ def greet_user(greeting, emphasis='!', count=1):
     # @begin print_greeting @desc Greet the user with the emphasized message.
     # @in greeting @as emphasized_greeting @desc emphasized greeting as input
     # @out greeting @as displayed_greeting @file stream:stdout
-    print(greeting)
+    # @call print_text @desc helper function for printing text
+    print_something(greeting)
     # @end print_greeting
 
+
+def print_something(text_to_print):
+	print(text_to_print)
+	
 # @end EmphasizedHelloWorld
 
 if __name__ == '__main__':
