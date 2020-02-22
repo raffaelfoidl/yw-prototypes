@@ -4,21 +4,19 @@ import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.*;
 import org.yesworkflow.annotations.Annotation;
+import org.yesworkflow.annotations.In;
 import org.yesworkflow.annotations.Out;
 import org.yesworkflow.annotations.Return;
 import org.yesworkflow.annotations.util.AnnotationBlock;
 import org.yesworkflow.annotations.util.AnnotationLine;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class ExtractProvenance {
+class ExtractProvenance {
 
-    public static final String YW_NS = "http://yesworkflow.org/";
-    public static final String YW_PREFIX = "yw";
+    private static final String YW_NS = "http://yesworkflow.org/";
+    private static final String YW_PREFIX = "yw";
 
-    public static final String JIM_PREFIX = "jim";
-    public static final String JIM_NS = "http://www.cs.rpi.edu/~hendler/";
 
     private final ProvFactory provFactory;
     private final Namespace namespace;
@@ -33,7 +31,6 @@ public class ExtractProvenance {
         namespace = new Namespace();
         namespace.addKnownNamespaces();
         namespace.register(YW_PREFIX, YW_NS);
-        namespace.register(JIM_PREFIX, JIM_NS);
     }
 
     private QualifiedName qualifiedName(String name) {
@@ -66,9 +63,21 @@ public class ExtractProvenance {
                     if (annotation instanceof Out) {
                         QualifiedName entityId = ((Entity)prov).getId();
                         QualifiedName activityId = qualifiedName(block.getBegin().value());
-                        QualifiedName wgbId = qualifiedName(entityId.getLocalPart() + "__WGB__" + activityId.getLocalPart());
+                        QualifiedName wgbId = qualifiedName(entityId.getLocalPart() + "__GEN__" + activityId.getLocalPart());
+
                         WasGeneratedBy wgb = provFactory.newWasGeneratedBy(wgbId, entityId, activityId);
                         elements.put(wgbId, wgb);
+                    }
+
+                    // connect inputs with activities
+                    // Param annotation extends In => no need for extra disjunctive filter term
+                    if (annotation instanceof In) {
+                        QualifiedName entityId = ((Entity)prov).getId();
+                        QualifiedName activityId = qualifiedName(block.getBegin().value());
+                        QualifiedName useId = qualifiedName(entityId.getLocalPart() + "__USE__" + activityId.getLocalPart());
+
+                        Used use = provFactory.newUsed(useId, activityId, entityId);
+                        elements.put(useId, use);
                     }
                 }
             }
