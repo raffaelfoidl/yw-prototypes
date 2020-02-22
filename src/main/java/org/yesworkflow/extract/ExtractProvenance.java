@@ -6,7 +6,6 @@ import org.openprovenance.prov.model.*;
 import org.yesworkflow.annotations.Annotation;
 import org.yesworkflow.annotations.In;
 import org.yesworkflow.annotations.Out;
-import org.yesworkflow.annotations.Return;
 import org.yesworkflow.annotations.util.AnnotationBlock;
 import org.yesworkflow.annotations.util.AnnotationLine;
 
@@ -37,6 +36,30 @@ class ExtractProvenance {
         return namespace.qualifiedName(YW_PREFIX, name, provFactory);
     }
 
+    private QualifiedName qualifiedName(String name1, String name2, String connector) {
+        return namespace.qualifiedName(YW_PREFIX, String.format("%s__%s__%s", name1, connector, name2), provFactory);
+    }
+
+    private WasGeneratedBy getGen(StatementOrBundle entity, AnnotationBlock activityBlock) {
+        if (!(entity instanceof Entity))
+            return null;
+
+        QualifiedName entityId = ((Entity) entity).getId();
+        QualifiedName activityId = qualifiedName(activityBlock.getBegin().value());
+        QualifiedName genId = qualifiedName(entityId.getLocalPart(), activityId.getLocalPart(), "GEN");
+        return provFactory.newWasGeneratedBy(genId, entityId, activityId);
+    }
+
+    private Used getUse(StatementOrBundle entity, AnnotationBlock activityBlock) {
+        if (!(entity instanceof Entity))
+            return null;
+
+        QualifiedName entityId = ((Entity) entity).getId();
+        QualifiedName activityId = qualifiedName(activityBlock.getBegin().value());
+        QualifiedName genId = qualifiedName(entityId.getLocalPart(), activityId.getLocalPart(), "USE");
+        return provFactory.newUsed(genId, activityId, entityId);
+    }
+
     private Document createDocument() {
         // use map in order to guarantee uniqueness by ID (QName)
         Map<QualifiedName, StatementOrBundle> elements = new HashMap<>(); // contains all
@@ -61,23 +84,15 @@ class ExtractProvenance {
                     // connect outputs with activities
                     // Return annotation extends Out => no need for extra disjunctive filter term
                     if (annotation instanceof Out) {
-                        QualifiedName entityId = ((Entity)prov).getId();
-                        QualifiedName activityId = qualifiedName(block.getBegin().value());
-                        QualifiedName wgbId = qualifiedName(entityId.getLocalPart() + "__GEN__" + activityId.getLocalPart());
-
-                        WasGeneratedBy wgb = provFactory.newWasGeneratedBy(wgbId, entityId, activityId);
-                        elements.put(wgbId, wgb);
+                        WasGeneratedBy gen = getGen(prov, block);
+                        elements.put(gen.getId(), gen);
                     }
 
                     // connect inputs with activities
                     // Param annotation extends In => no need for extra disjunctive filter term
                     if (annotation instanceof In) {
-                        QualifiedName entityId = ((Entity)prov).getId();
-                        QualifiedName activityId = qualifiedName(block.getBegin().value());
-                        QualifiedName useId = qualifiedName(entityId.getLocalPart() + "__USE__" + activityId.getLocalPart());
-
-                        Used use = provFactory.newUsed(useId, activityId, entityId);
-                        elements.put(useId, use);
+                        Used use = getUse(prov, block);
+                        elements.put(use.getId(), use);
                     }
                 }
             }
