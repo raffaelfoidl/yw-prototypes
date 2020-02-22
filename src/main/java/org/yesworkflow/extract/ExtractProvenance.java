@@ -142,8 +142,21 @@ class ExtractProvenance {
         QualifiedName activityId = qualifiedName(block.getBegin().value());
         StatementOrBundle activity = elements.get(activityId);
 
-        if ((activity instanceof Activity))
-            addDescriptionLabel("log: " + annotation.value(), ((Activity) activity).getLabel());
+        if (!(activity instanceof Activity))
+            return;
+
+        String logMessage = annotation.value();
+        Qualification annQual = (Qualification) annotation;
+        String logEntity = annQual.primaryAnnotation.value();
+
+        // if logged entity has an alias, use the alias as a log_-suffix instead of the real name
+        if (annQual.primaryAnnotation instanceof AliasableAnnotation) {
+            AliasableAnnotation annAlias = (AliasableAnnotation) annQual.primaryAnnotation;
+            if (annAlias.alias() != null)
+                logEntity = annAlias.alias();
+        }
+
+        addDescriptionLabel(String.format("log_%s: %s", logEntity, logMessage), ((Activity) activity).getLabel());
     }
 
     /**
