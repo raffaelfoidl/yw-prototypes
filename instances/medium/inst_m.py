@@ -101,7 +101,7 @@ def main():
     @begin save_out_file @desc persist blurred image
     @in blurred_image
     @in out
-    @out out_file @uri file:{out}
+    @return out_file @uri file:{out}
     """
     print("Saving output file...")
     matplotlib.pyplot.imsave(args.output, out_file)

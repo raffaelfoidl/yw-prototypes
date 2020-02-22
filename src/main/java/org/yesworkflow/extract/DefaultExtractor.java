@@ -159,6 +159,7 @@ public class DefaultExtractor implements Extractor {
         return extractFacts;
     }
 
+    @Override
     public void getProvenance() throws YWToolUsageException {
         if (extractProvenance == null) {
             List<AnnotationBlock> abs = AnnotationBlockBuilder.build(allAnnotations).get();

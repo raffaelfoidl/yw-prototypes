@@ -97,9 +97,9 @@ class ExtractProvenance {
     private Document createDocument() {
         // use map/set in order to guarantee uniqueness by ID (qualified name)
         Map<QualifiedName, StatementOrBundle> elements = new HashMap<>(); // contains all
-        Set<StatementOrBundle> anonymousElements = new HashSet<>(); // contains those that do not implement Identifiable
+        Set<StatementOrBundle> anonymousElements = new HashSet<>(); // contains those not implementing Identifiable
 
-        // convert found annotations to provenance activities (methods/tasks) and entities (in/out/return parameters)
+        // convert found annotations to provenance information
         for (AnnotationBlock block : this.blocks) {
             for (AnnotationLine line : block.getLines()) {
                 for (Annotation annotation : line.getAnnotations()) {
@@ -121,9 +121,8 @@ class ExtractProvenance {
                     if (annotation instanceof Call)
                         handleCall(elements, block, prov);
 
-                    if (annotation instanceof Log) {
+                    if (annotation instanceof Log)
                         handleLog(elements, block, annotation);
-                    }
                 }
             }
         }

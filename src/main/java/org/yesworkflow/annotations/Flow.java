@@ -60,7 +60,7 @@ public abstract class Flow extends AliasableAnnotation {
     public StatementOrBundle getProvenanceInfo(ProvFactory provFactory, Function<String, QualifiedName> qualifierMethod) {
         String desc = this.uriAnnotation() != null ? this.uriAnnotation().value() : null;
 
-        // @uri has precedence over a possible @desc (desc is added as label anyway, see ExtractProvenance class)
+        // @uri has precedence over a possibly available @desc
         if (desc == null && this.description() != null)
             desc = this.descriptionClean();
 
