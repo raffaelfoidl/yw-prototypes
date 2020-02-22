@@ -4,10 +4,13 @@ import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.*;
 import org.yesworkflow.annotations.Annotation;
+import org.yesworkflow.annotations.Out;
+import org.yesworkflow.annotations.Return;
 import org.yesworkflow.annotations.util.AnnotationBlock;
 import org.yesworkflow.annotations.util.AnnotationLine;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ExtractProvenance {
 
@@ -39,8 +42,9 @@ public class ExtractProvenance {
 
     private Document createDocument() {
         // use map in order to guarantee uniqueness by ID (QName)
-        Map<QualifiedName, StatementOrBundle> elements = new HashMap<>();
+        Map<QualifiedName, StatementOrBundle> elements = new HashMap<>(); // contains all
 
+        // convert found annotations to provenance activities (methods/tasks) and entities (in/out/return parameters)
         for (AnnotationBlock block : this.blocks) {
             for (AnnotationLine line : block.getLines()) {
                 for (Annotation annotation : line.getAnnotations()) {
@@ -50,16 +54,26 @@ public class ExtractProvenance {
 
                     QualifiedName key = ((Identifiable) prov).getId();
                     StatementOrBundle current = elements.getOrDefault(key, null);
-                    // only potentially overwrite formerly stored value if the new one contains a label or the
-                    // currently stored one does not
+                    // only potentially overwrite value already stored if the new one contains a label or the one
+                    // currently stored does not
                     if (current == null || annotation.description() != null ||
                             (current instanceof HasLabel && ((HasLabel) current).getLabel() == null)) {
                         elements.put(key, prov);
+                    }
 
+                    // connect outputs with activities
+                    // Return annotation extends Out => no need for extra disjunctive filter term
+                    if (annotation instanceof Out) {
+                        QualifiedName entityId = ((Entity)prov).getId();
+                        QualifiedName activityId = qualifiedName(block.getBegin().value());
+                        QualifiedName wgbId = qualifiedName(entityId.getLocalPart() + "__WGB__" + activityId.getLocalPart());
+                        WasGeneratedBy wgb = provFactory.newWasGeneratedBy(wgbId, entityId, activityId);
+                        elements.put(wgbId, wgb);
                     }
                 }
             }
         }
+
 
         Document doc = provFactory.newDocument();
         doc.getStatementOrBundle().addAll(elements.values());

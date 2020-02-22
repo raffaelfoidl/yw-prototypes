@@ -1,5 +1,8 @@
 package org.yesworkflow.annotations.util;
 
+import org.yesworkflow.YWKeywords;
+import org.yesworkflow.annotations.Annotation;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +23,17 @@ public class AnnotationBlock {
             return null;
         }
         return this.lines.get(this.lines.size() - 1);
+    }
+
+    public Annotation getBegin() {
+        for (AnnotationLine line : this.lines) {
+            for (Annotation annotation : line.getAnnotations()) {
+                if (annotation.tag == YWKeywords.Tag.BEGIN)
+                    return annotation;
+            }
+        }
+
+        return null;
     }
 }
 
