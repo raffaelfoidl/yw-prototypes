@@ -23,7 +23,7 @@ class ExtractProvenance {
     private final Formats.ProvFormat fileFormat;
 
     ExtractProvenance(List<AnnotationBlock> blocks, String file, String format, String namespace, String prefix) throws YWToolUsageException {
-        List<String> allowedFormats = Arrays.asList("PROVN", "TURTLE", "XML", "TRIG", "JSON", "PDF", "SVG", "DOT", "PNG", "JPEG");
+        List<String> allowedFormats = Arrays.asList("PROVN", "TURTLE", "XML", "RDFXML", "TRIG", "JSON", "PDF", "SVG", "DOT", "PNG", "JPEG");
         if (!allowedFormats.contains(format.toUpperCase())) {
             throw new YWToolUsageException("Invalid provenance output format '" + format.toUpperCase() + "'");
         }
@@ -46,11 +46,10 @@ class ExtractProvenance {
             case PROVN:
                 return ".pn";
             case XML:
+            case RDFXML:
                 return ".xml";
             case TURTLE:
                 return ".ttl";
-            case RDFXML:
-                throw new YWToolUsageException("attempted to write to unsupported format '" + Formats.ProvFormat.RDFXML + "'");
             case TRIG:
                 return ".trig";
             case JSON:

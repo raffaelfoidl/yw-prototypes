@@ -334,8 +334,8 @@ public class YesWorkflowCLI {
         "extract.comment            Single-line comment delimiter in source files"                               + EOL +
         "extract.factsfile          File for storing prolog facts about scripts"                                 + EOL +
         "extract.provenancefile     File for storing provenance information about scripts (no extension)"        + EOL +
-        "extract.provenanceformat   Format of provenance information: PROVN, TURTLE, XML, TRIG, JSON, PDF,"      + EOL +
-        "                             SVG, DOT, PNG, JPEG"                                                       + EOL +
+        "extract.provenanceformat   Format of provenance information: PROVN, TURTLE, XML, RDFXML, TRIG, JSON,"   + EOL +
+        "                             PDF, SVG, DOT, PNG, JPEG"                                                  + EOL +
         "extract.provenancens       Namespace for provenance information about scripts"                          + EOL +
         "extract.provenanceprefix   Namespace prefix for provenance information about scripts"                   + EOL +
         "extract.language           Language used in source files"                                               + EOL +
