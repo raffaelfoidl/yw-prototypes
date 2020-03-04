@@ -6,6 +6,7 @@ import csv
 import locale
 from typing import List, NamedTuple, Tuple, Iterator, Any
 import argparse
+import PIL
 
 root, filename = os.path.split(__file__)
 by_country_path = os.path.join(root, "by_country.json")
@@ -25,6 +26,7 @@ def parse_args():
 
 
 def read_file(path: str) -> List[Entry]:
+	"""Read the CSV input data as NamedTuple"""
     global Entry
     with open(path) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=",")
@@ -42,6 +44,7 @@ def read_file(path: str) -> List[Entry]:
 
 
 def get_classification(speed: float) -> Tuple[float, str]:
+	global root
     classes = {
         (0, 0., 1.85): "Calm",
         (1, 1.85, 7.41): "Light Airs",
@@ -146,7 +149,7 @@ def main():
     """
     @begin group_data_by_country @desc split data by country
     @param data_parsed
-    @out data_by_country @desc [output] countries grouped by country (list of sublists)
+    @out data_by_country @desc [output] contries grouped by country (list of sublists)
     """
     data_by_country = itertools.groupby(data, key=lambda x: x.country)
     """
@@ -182,7 +185,7 @@ def main():
     @begin persist_top_ten_by_country
     @in country_top_ten
     @out summary_by_country @uri file:by_country.json
-    @call get_classification @desc maps wind speed to Beaufort scale 
+    @call get_classification @desc maps wind speed to Beaufort scale
     """
     persist_top_ten_by_country(top_ten_by_country, by_country_path)
     """

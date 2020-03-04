@@ -1,4 +1,6 @@
 import os
+
+import math
 import numpy
 import matplotlib.pyplot
 import scipy.ndimage
@@ -27,6 +29,8 @@ def blur_image(img, sigma=3):
 
 
 def get_diff(img1, img2):
+    """Gets the absolute difference of each and every pixel between the two parameters img1 and img2, whereby
+    img1 denotes the image as it was given as input and img2 descirbes the one with a Gaussian blur applied to it"""
     if img1.shape != img2.shape:
         print("Error, images are not of same dimensions")
         exit(1)
@@ -36,12 +40,18 @@ def get_diff(img1, img2):
 
     # create empty x * y array which will contain the diffs
     diff_per_pixel = [[0 for _ in x_range] for _ in y_range]
+    last_percentage = 0
     for y in y_range:
         for x in x_range:
             px_1 = img1[y, x]
             px_2 = img2[y, x]
             diff = abs(px_1.astype(numpy.int16) - px_2.astype(numpy.int16))
             diff_per_pixel[y][x] = diff.sum()
+        
+        new_percentage = int(round(y / img1.shape[0]) * 100, -1))  # round to nearest ten
+        if new_percentage != last_percentage and new_percentage != 100:
+        	last_percentage = new_percentage
+        	print("{} % done".format(new_percentage))
 
     return diff_per_pixel
 
@@ -117,7 +127,7 @@ def main():
     @in blurred_image
     @out diff_image
         @log {percentage} % done
-        @log Done calculating
+        @log Done caluclating
     """
     print("Calculating differences in pixel colors...")
     diff = get_diff(in_file, out_file)
