@@ -1,8 +1,7 @@
 package org.yesworkflow.annotations;
 
-import org.openprovenance.prov.model.ProvFactory;
-import org.openprovenance.prov.model.QualifiedName;
-import org.openprovenance.prov.model.StatementOrBundle;
+import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.vanilla.Type;
 import org.yesworkflow.YWKeywords;
 import org.yesworkflow.YWKeywords.Tag;
 
@@ -39,7 +38,13 @@ public class Call extends Annotation {
 
     @Override
     public StatementOrBundle getProvenanceInfo(ProvFactory provFactory, Function<String, QualifiedName> qualifierMethod) {
-        return provFactory.newEntity(qualifierMethod.apply(this.value().trim()), this.descriptionClean());
+        Entity entity = provFactory.newEntity(qualifierMethod.apply(this.value().trim()));
+        String desc = this.descriptionClean();
+        if (desc != null)
+            entity.getLabel().add(provFactory.newInternationalizedString(desc));
+
+        entity.getType().add(new Type(null, "calledFunction"));
+        return entity;
     }
 }
 

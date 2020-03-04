@@ -57,8 +57,8 @@ def save_diff_image(path, diffs):
 """
 @begin inst_m.main @desc Blurs an image and computes the differences to the original
 @param sigma @desc sigma for gauss filter
-@in in @desc input file
-@param out @desc output image file path
+@in in @as input_path @desc input file
+@param out @as output_path @desc output image file path
 @param diff @desc diff image file path
 @out diff_file @uri file:{diff}
 @out out_file @uri file:{out}
@@ -74,7 +74,7 @@ def main():
 
     """
     @begin read_input @desc read image from input path
-    @in in
+    @in in @as input_path
     @out input_file
     """
     print("Reading input file...")
@@ -100,8 +100,9 @@ def main():
     """
     @begin save_out_file @desc persist blurred image
     @in blurred_image
-    @in out
+    @in out @as output_path
     @return out_file @uri file:{out}
+        @log Done saving output image
     """
     print("Saving output file...")
     matplotlib.pyplot.imsave(args.output, out_file)
@@ -115,6 +116,8 @@ def main():
     @in input_file
     @in blurred_image
     @out diff_image
+        @log {percentage} % done
+        @log Done calculating
     """
     print("Calculating differences in pixel colors...")
     diff = get_diff(in_file, out_file)

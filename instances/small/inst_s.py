@@ -144,9 +144,9 @@ def main():
     print("Processing...")
 
     """
-    @begin group_data_by_country @desc split data by country,\nreturning list of sublists
+    @begin group_data_by_country @desc split data by country
     @param data_parsed
-    @out data_by_country
+    @out data_by_country @desc [output] countries grouped by country (list of sublists)
     """
     data_by_country = itertools.groupby(data, key=lambda x: x.country)
     """
@@ -155,7 +155,7 @@ def main():
 
     """
     @begin get_top_ten_by_country @desc 10 countries with highest\navg wind speed
-    @param data_by_country
+    @param data_by_country @desc [input] country-grouped data
     @out country_top_ten
     """
     top_ten_by_country = get_top_ten_by_country(data_by_country)
@@ -182,6 +182,7 @@ def main():
     @begin persist_top_ten_by_country
     @in country_top_ten
     @out summary_by_country @uri file:by_country.json
+    @call get_classification @desc maps wind speed to Beaufort scale 
     """
     persist_top_ten_by_country(top_ten_by_country, by_country_path)
     """
@@ -192,6 +193,7 @@ def main():
     @begin persist_top_ten_overall
     @param overall_top_ten
     @out summary_overall @uri file:overall.json
+    @call get_classification
     """
     persist_top_ten_overall(top_ten_overall, overall_path)
     """

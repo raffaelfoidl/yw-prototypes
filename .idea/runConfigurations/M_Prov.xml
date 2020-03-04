@@ -2,7 +2,7 @@
   <configuration default="false" name="M_Prov" type="Application" factoryName="Application" editBeforeRun="true">
     <option name="MAIN_CLASS_NAME" value="org.yesworkflow.cli.YesWorkflowCLI" />
     <module name="yesworkflow" />
-    <option name="PROGRAM_PARAMETERS" value="extract instances/medium/inst_m.py -c extract.provenancefile=instances/out/inst_m_prov -c extract.provenanceformat=pdf -c extract.provenancens=http://yesworkflow.org/ -c extract.provenanceprefix=yw" />
+    <option name="PROGRAM_PARAMETERS" value="extract instances/medium/inst_m.py -c extract.provenancefile=instances/out/inst_m_prov -c extract.provenanceformat=provn -c extract.provenancens=http://yesworkflow.org/ -c extract.provenanceprefix=yw" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="org.yesworkflow.cli.*" />

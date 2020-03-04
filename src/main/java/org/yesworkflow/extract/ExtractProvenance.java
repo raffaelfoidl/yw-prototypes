@@ -7,6 +7,7 @@ import org.yesworkflow.annotations.*;
 import org.yesworkflow.annotations.util.AnnotationBlock;
 import org.yesworkflow.annotations.util.AnnotationLine;
 import org.yesworkflow.exceptions.YWToolUsageException;
+import org.openprovenance.prov.vanilla.Type;
 
 import java.util.*;
 
@@ -170,6 +171,7 @@ class ExtractProvenance {
         QualifiedName genId = qualifiedName(entityId.getLocalPart(), activityId.getLocalPart(), "CALL");
 
         Used use = provFactory.newUsed(genId, activityId, entityId);
+        use.getType().add(new Type(null, "call"));
         elements.put(use.getId(), use);
     }
 
