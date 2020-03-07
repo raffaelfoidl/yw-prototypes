@@ -171,7 +171,7 @@ class ExtractProvenance {
         QualifiedName genId = qualifiedName(entityId.getLocalPart(), activityId.getLocalPart(), "CALL");
 
         Used use = provFactory.newUsed(genId, activityId, entityId);
-        use.getType().add(new Type(null, "call"));
+        use.getType().add(new Type(provFactory.getName().XSD_STRING, "call"));
         elements.put(use.getId(), use);
     }
 

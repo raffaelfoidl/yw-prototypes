@@ -43,7 +43,7 @@ public class Call extends Annotation {
         if (desc != null)
             entity.getLabel().add(provFactory.newInternationalizedString(desc));
 
-        entity.getType().add(new Type(null, "calledFunction"));
+        entity.getType().add(new Type(provFactory.getName().XSD_STRING, "calledFunction"));
         return entity;
     }
 }
