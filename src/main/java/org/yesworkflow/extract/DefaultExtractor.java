@@ -47,9 +47,9 @@ public class DefaultExtractor implements Extractor {
     private String commentListingPath;
     private String factsFile = null;
     private String provenanceFile = null;
-    private String provenanceFormat = null;
-    private String provenanceNamespace = null;
-    private String provenancePrefix = null;
+    private String provenanceFormat = "turtle";
+    private String provenanceNamespace = "http://yesworkflow.org/";
+    private String provenancePrefix = "yw";
     private String skeletonFile = null;
     private String skeleton = null;
     private Map<String, String> extractFacts = null;
