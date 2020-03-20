@@ -3,6 +3,7 @@ package org.yesworkflow.extract;
 import org.openprovenance.prov.interop.Formats;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.*;
+import org.openprovenance.prov.xml.InternationalizedString;
 import org.yesworkflow.annotations.*;
 import org.yesworkflow.annotations.util.AnnotationBlock;
 import org.yesworkflow.annotations.util.AnnotationLine;
@@ -244,7 +245,7 @@ class ExtractProvenance {
             currentLabels = new ArrayList<>();
 
         // only add labels that have not yet been stored (Object.equals() with streams is necessary since
-        // difference implementations of LangString are not equal despite having the same underlying string value)
+        // different implementations of LangString are not equal despite having the same underlying string value)
         if (provLabels != null && provLabels.size() > 0) {
             List<LangString> finalCurrentLabels = currentLabels;
             provLabels.stream().filter(x ->
@@ -261,8 +262,9 @@ class ExtractProvenance {
             currentLabels = new ArrayList<>();
 
         // only add description as label if has not yet been stored (Object.equals() with streams is necessary since
-        // difference implementations of LangString are not equal despite having the same underlying string value)
-        LangString descLabel = new org.openprovenance.prov.vanilla.LangString(annotationDesc);
+        // different implementations of LangString are not equal despite having the same underlying string value)
+        InternationalizedString descLabel = new InternationalizedString();
+        descLabel.setValue(annotationDesc);
         if (currentLabels.stream().noneMatch(x -> Objects.equals(x.getValue(), descLabel.getValue())))
             currentLabels.add(descLabel);
     }
