@@ -56,7 +56,7 @@ def get_classification(speed: float) -> Tuple[float, str]:
         (7, 51.86, 62.97): "Moderate (near) gale",
         (8, 62.97, 75.93): "Fresh gale",
         (9, 75.93, 88.9): "Strong or severe gale",
-        (10, 89.9, 103.71): "Whole gale or Storm",
+        (10, 88.9, 103.71): "Whole gale or Storm",
         (11, 103.71, 118.53): "Violent Storm",
         (12, 118.53, 118.54): "Hurricane"
     }

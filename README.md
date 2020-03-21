@@ -1,7 +1,7 @@
 YesWorkflow Prototypes
 ======================
 
-*Note: This is an adaption of <a target="_blank" href="https://github.com/yesworkflow-org/yw-prototypes">YesWorkflow</a> which was created in the course of my <a target="_blank" href="https://github.com/raffaelfoidl/ProvCaptPyEnvs">bachelor thesis</a> in Software & Information Engineering at University of Technology, Vienna. It has been extended to provide W3C <a target="_blank" href="https://www.w3.org/TR/prov-o/">PROV-O</a> compliant output. For further information on the changes made to the original version and the thought processes behind them, refer to the <a target="_blank" href="https://github.com/raffaelfoidl/ProvCaptPyEnvs/blob/master/thesis.pdf">thesis</a>.*
+*Note: This is an adaption of <a target="_blank" href="https://github.com/yesworkflow-org/yw-prototypes">YesWorkflow</a> which was created in the course of my <a target="_blank" href="https://github.com/raffaelfoidl/ProvCaptPyEnvs">bachelor thesis</a> in Software & Information Engineering at Vienna University of Technology. It has been extended to provide W3C <a target="_blank" href="https://www.w3.org/TR/prov-o/">PROV-O</a> compliant output. For further information on the changes made to the original version and the thought processes behind them, refer to the <a target="_blank" href="https://github.com/raffaelfoidl/ProvCaptPyEnvs/blob/master/thesis.pdf">thesis</a>.*
 
 
 The yw-prototypes repository contains early implementations of YesWorkflow, an approach to modeling conventional scripts and programs as scientific workflows.  The software is described in these two publications:
