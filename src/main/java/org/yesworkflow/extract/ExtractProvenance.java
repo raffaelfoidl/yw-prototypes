@@ -75,7 +75,7 @@ class ExtractProvenance {
 
     private String escapeForQName(String input) {
         // escaped because replaceAll takes regex
-        String[] forbiddenChars = new String[]{"=", "'", "\\(", "\\)", ",", "_", ":", ";", "\\[", "\\]", "/",
+        String[] forbiddenChars = new String[]{"=", "'", "\\.", "\\(", "\\)", ",", "_", ":", ";", "\\[", "\\]", "/",
                 "\\\\", "\\?", "@", "~", "&", "\\+", "\\*", "#", "\\$", "\\^", "!", "<", ">", "%"};
         String returnValue = input;
 
