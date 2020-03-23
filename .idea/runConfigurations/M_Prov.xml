@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="M_Prov" type="Application" factoryName="Application" editBeforeRun="true">
+    <option name="MAIN_CLASS_NAME" value="org.yesworkflow.cli.YesWorkflowCLI" />
+    <module name="yesworkflow" />
+    <option name="PROGRAM_PARAMETERS" value="extract instances/medium/inst_m.py -c extract.provenancefile=instances/out/inst_m_pdf -c extract.provenanceformat=pdf -c extract.provenancens=http://yesworkflow.org/ -c extract.provenanceprefix=yw" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="org.yesworkflow.cli.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

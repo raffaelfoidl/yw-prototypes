@@ -1,6 +1,11 @@
 package org.yesworkflow.annotations;
 
+import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.StatementOrBundle;
 import org.yesworkflow.YWKeywords.Tag;
+
+import java.util.function.Function;
 
 public abstract class Flow extends AliasableAnnotation {
     	
@@ -49,5 +54,18 @@ public abstract class Flow extends AliasableAnnotation {
         sb.append("}");
         
         return sb.toString();
+    }
+
+    @Override
+    public StatementOrBundle getProvenanceInfo(ProvFactory provFactory, Function<String, QualifiedName> qualifierMethod) {
+        String desc = this.uriAnnotation() != null ? this.uriAnnotation().value() : null;
+
+        // @uri has precedence over a possibly available @desc
+        if (desc == null && this.description() != null)
+            desc = this.descriptionClean();
+
+        String val = this.as != null ? this.as.value().trim() : this.value.trim();
+
+        return provFactory.newEntity(qualifierMethod.apply(val), desc);
     }
 }

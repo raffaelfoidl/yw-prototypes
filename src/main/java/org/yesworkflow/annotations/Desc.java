@@ -1,6 +1,12 @@
 package org.yesworkflow.annotations;
 
 import java.util.StringTokenizer;
+import java.util.function.Function;
+
+import org.openprovenance.prov.model.Identifiable;
+import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.StatementOrBundle;
 import org.yesworkflow.YWKeywords;
 
 public class Desc extends Qualification {
@@ -28,6 +34,11 @@ public class Desc extends Qualification {
     
     public String toString() {
         return value;
+    }
+
+    @Override
+    public StatementOrBundle getProvenanceInfo(ProvFactory provFactory, Function<String, QualifiedName> qualifierMethod) {
+        return null;
     }
 }
 

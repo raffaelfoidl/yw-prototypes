@@ -3,7 +3,11 @@ package org.yesworkflow.annotations;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.function.Function;
 
+import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.model.QualifiedName;
+import org.openprovenance.prov.model.StatementOrBundle;
 import org.yesworkflow.YWKeywords;
 import org.yesworkflow.data.LogEntryTemplate;
 import org.yesworkflow.data.TemplateVariable;
@@ -44,6 +48,11 @@ public class Log extends Qualification {
     
     public String toString() {
         return value;
+    }
+
+    @Override
+    public StatementOrBundle getProvenanceInfo(ProvFactory provFactory, Function<String, QualifiedName> qualifierMethod) {
+        return null;
     }
 }
 

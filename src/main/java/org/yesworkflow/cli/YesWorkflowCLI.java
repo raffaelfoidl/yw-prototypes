@@ -315,54 +315,59 @@ public class YesWorkflowCLI {
     }
     
     public static final String YW_CLI_USAGE_HELP = 
-            "USAGE: yw <command> [source file(s)] [-c <name=value>]..."                                 + EOL;
+            "USAGE: yw <command> [source file(s)] [-c <name=value>]..."                                          + EOL;
     
     public static final String YW_CLI_COMMAND_HELP = 
-        "Command                    Function"                                                           + EOL +
-        "-------                    --------"                                                           + EOL +
-        "extract                    Identifies YW comments in script source file(s)."                   + EOL +
-        "model                      Builds workflow model from identified YW comments. Implicitly"      + EOL +
-        "                             performs *extract* command first."                                + EOL +
-        "recon                      Reconstructs a run from persisted data products and log files."     + EOL +
-        "                             Implicitly performs *extract* and *model* commands first."        + EOL +
-        "graph                      Graphically renders workflow model of script. Implicitly performs"  + EOL +
-        "                             *extract* and *model* commands first."                            + EOL;
+        "Command                    Function"                                                                    + EOL +
+        "-------                    --------"                                                                    + EOL +
+        "extract                    Identifies YW comments in script source file(s)."                            + EOL +
+        "model                      Builds workflow model from identified YW comments. Implicitly"               + EOL +
+        "                             performs *extract* command first."                                         + EOL +
+        "recon                      Reconstructs a run from persisted data products and log files."              + EOL +
+        "                             Implicitly performs *extract* and *model* commands first."                 + EOL +
+        "graph                      Graphically renders workflow model of script. Implicitly performs"           + EOL +
+        "                             *extract* and *model* commands first."                                     + EOL;
 
     public static final String YW_CLI_CONFIG_HELP = 
-        "Configuration Name         Value"                                                              + EOL +
-        "------------------         -----"                                                              + EOL +
-        "extract.comment            Single-line comment delimiter in source files"                      + EOL +
-        "extract.factsfile          File for storing prolog facts about scripts"                        + EOL +
-        "extract.language           Language used in source files"                                      + EOL +
-        "extract.listfile           File for storing flat list of extracted YW markup"                  + EOL +
-        "extract.skeletonfile       File for storing YW-markup skeleton of source files"                + EOL +  
-        "extract.sources            List of source files to analyze"                                    + EOL +        
-        ""                                                                                              + EOL +
-        "model.factsfile            File for storing prolog facts describing model"                     + EOL +
-        "model.workflow             Name of top-level workflow in model"                                + EOL +
-        ""                                                                                              + EOL +
-        "recon.factsfile            File for storing reconstructed facts about a run"                   + EOL +
-        ""                                                                                              + EOL +
-        "graph.datalabel            Info to display in data nodes: NAME, URI, or BOTH"                  + EOL +
-        "graph.dotcomments          Include comments in dot file (ON or OFF)"                           + EOL +
-        "graph.dotfile              Name of GraphViz DOT file to write graph to"                        + EOL +
-        "graph.edgelabels           SHOW or HIDE labels on edges in process and data views"             + EOL +
-        "graph.layout               Direction of graph layout: TB, LR, RL, or BT"                       + EOL +
-        "graph.params               SHOW, HIDE, or REDUCE visibility of parameters"                     + EOL +
-        "graph.portlayout           Layout mode for workflow ports: HIDE, RELAX or GROUP"               + EOL +
-        "graph.programlabel         Info to display in program nodes: NAME, DESCRIPTION, or BOTH"       + EOL +
-        "graph.subworkflow          Qualified name of (sub)workflow to render"                          + EOL +
-        "graph.title                Graph title (defaults to workflow name)"                            + EOL +
-        "graph.titleposition        Where to place graph title: TOP, BOTTOM, or HIDE"                   + EOL +
-        "graph.view                 Workflow view to render: PROCESS, DATA or COMBINED"                 + EOL +
-        "graph.workflowbox          SHOW or HIDE box around nodes internal to workflow"                 + EOL;
+        "Configuration Name         Value"                                                                       + EOL +
+        "------------------         -----"                                                                       + EOL +
+        "extract.comment            Single-line comment delimiter in source files"                               + EOL +
+        "extract.factsfile          File for storing prolog facts about scripts"                                 + EOL +
+        "extract.provenancefile     File for storing provenance information about scripts (no extension)"        + EOL +
+        "extract.provenanceformat   Format of provenance information: PROVN, TURTLE, XML, RDFXML, TRIG, JSON,"   + EOL +
+        "                             PDF, SVG, DOT, PNG, JPEG"                                                  + EOL +
+        "extract.provenancens       Namespace for provenance information about scripts"                          + EOL +
+        "extract.provenanceprefix   Namespace prefix for provenance information about scripts"                   + EOL +
+        "extract.language           Language used in source files"                                               + EOL +
+        "extract.listfile           File for storing flat list of extracted YW markup"                           + EOL +
+        "extract.skeletonfile       File for storing YW-markup skeleton of source files"                         + EOL +
+        "extract.sources            List of source files to analyze"                                             + EOL +
+        ""                                                                                                       + EOL +
+        "model.factsfile            File for storing prolog facts describing model"                              + EOL +
+        "model.workflow             Name of top-level workflow in model"                                         + EOL +
+        ""                                                                                                       + EOL +
+        "recon.factsfile            File for storing reconstructed facts about a run"                            + EOL +
+        ""                                                                                                       + EOL +
+        "graph.datalabel            Info to display in data nodes: NAME, URI, or BOTH"                           + EOL +
+        "graph.dotcomments          Include comments in dot file (ON or OFF)"                                    + EOL +
+        "graph.dotfile              Name of GraphViz DOT file to write graph to"                                 + EOL +
+        "graph.edgelabels           SHOW or HIDE labels on edges in process and data views"                      + EOL +
+        "graph.layout               Direction of graph layout: TB, LR, RL, or BT"                                + EOL +
+        "graph.params               SHOW, HIDE, or REDUCE visibility of parameters"                              + EOL +
+        "graph.portlayout           Layout mode for workflow ports: HIDE, RELAX or GROUP"                        + EOL +
+        "graph.programlabel         Info to display in program nodes: NAME, DESCRIPTION, or BOTH"                + EOL +
+        "graph.subworkflow          Qualified name of (sub)workflow to render"                                   + EOL +
+        "graph.title                Graph title (defaults to workflow name)"                                     + EOL +
+        "graph.titleposition        Where to place graph title: TOP, BOTTOM, or HIDE"                            + EOL +
+        "graph.view                 Workflow view to render: PROCESS, DATA or COMBINED"                          + EOL +
+        "graph.workflowbox          SHOW or HIDE box around nodes internal to workflow"                          + EOL;
     
     public static final String YW_CLI_EXAMPLES_HELP = 
-        "Examples"                                                                                      + EOL +
-        "--------"                                                                                      + EOL +
-        "$ yw extract myscript -c extract.comment='#' -c extract.listing=comments.txt"                  + EOL +
-        "$ yw graph myscript.py -config graph.view=combined -config graph.datalabel=uri"                + EOL +
-        "$ yw graph scriptA.py scriptB.py > wf.gv; dot -Tpdf wf.gv -o wf.pdf; open wf.pdf"              + EOL;
+        "Examples"                                                                                               + EOL +
+        "--------"                                                                                               + EOL +
+        "$ yw extract myscript -c extract.comment='#' -c extract.listing=comments.txt"                           + EOL +
+        "$ yw graph myscript.py -config graph.view=combined -config graph.datalabel=uri"                         + EOL +
+        "$ yw graph scriptA.py scriptB.py > wf.gv; dot -Tpdf wf.gv -o wf.pdf; open wf.pdf"                       + EOL;
         
     private OptionParser createOptionsParser() throws Exception {
         

@@ -1,6 +1,9 @@
 YesWorkflow Prototypes
 ======================
 
+*Note: This is an adaption of <a target="_blank" href="https://github.com/yesworkflow-org/yw-prototypes">YesWorkflow</a> which was created in the course of my <a target="_blank" href="https://github.com/raffaelfoidl/ProvCaptPyEnvs">bachelor thesis</a> in Software & Information Engineering at Vienna University of Technology. It has been extended to provide W3C <a target="_blank" href="https://www.w3.org/TR/prov-o/">PROV-O</a> compliant output. For further information on the changes made to the original version and the thought processes behind them, refer to the <a target="_blank" href="https://github.com/raffaelfoidl/ProvCaptPyEnvs/blob/master/thesis.pdf">thesis</a>.*
+
+
 The yw-prototypes repository contains early implementations of YesWorkflow, an approach to modeling conventional scripts and programs as scientific workflows.  The software is described in these two publications:
 
 * T. McPhillips, T. Song, T. Kolisnik, S. Aulenbach, K. Belhajjame, R.K. Bocinsky, Y. Cao, J. Cheney, F. Chirigati, S. Dey, J. Freire, C. Jones, J. Hanken, K.W. Kintigh, T.A. Kohler, D. Koop, J.A. Macklin, P. Missier, M. Schildhauer, C. Schwalm, Y. Wei, M. Bieda, B. Ludäscher (2015). **[YesWorkflow: A User-Oriented, Language-Independent Tool for Recovering Workflow Information from Scripts](http://ijdc.net/index.php/ijdc/article/view/10.1.298)**. *International Journal of Digital Curation* **10**, 298-313. [[PDF](http://ijdc.net/index.php/ijdc/article/download/10.1.298/401)]
