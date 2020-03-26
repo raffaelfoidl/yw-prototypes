@@ -367,7 +367,9 @@ public class YesWorkflowCLI {
         "--------"                                                                                               + EOL +
         "$ yw extract myscript -c extract.comment='#' -c extract.listing=comments.txt"                           + EOL +
         "$ yw graph myscript.py -config graph.view=combined -config graph.datalabel=uri"                         + EOL +
-        "$ yw graph scriptA.py scriptB.py > wf.gv; dot -Tpdf wf.gv -o wf.pdf; open wf.pdf"                       + EOL;
+        "$ yw graph scriptA.py scriptB.py > wf.gv; dot -Tpdf wf.gv -o wf.pdf; open wf.pdf"                       + EOL +
+        "$ yw extract myscript.py -c extract.provenancefile=myscript -c extract.provenanceformat=turtle -c " +
+          "extract.provenancens=http://yesworkflow.org/ -c extract.provenanceprefix=yw"                          + EOL;
         
     private OptionParser createOptionsParser() throws Exception {
         
