@@ -1,7 +1,5 @@
 package org.yesworkflow.annotations;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.function.Function;

@@ -51,6 +51,6 @@ public class YesWorkflowSQLiteDB extends YesWorkflowDB {
     public Long getLong(Object value) {
         if (value instanceof Long) {
             return (Long)value;
-        } else return new Long((Integer)value); 
+        } else return Long.valueOf((Integer)value);
     }
 }

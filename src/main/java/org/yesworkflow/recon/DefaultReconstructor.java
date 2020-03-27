@@ -75,7 +75,7 @@ public class DefaultReconstructor implements Reconstructor  {
         
         Object resourceFinderInstance;
         try {
-            resourceFinderInstance = resourceFinderClass.newInstance();
+            resourceFinderInstance = resourceFinderClass.getDeclaredConstructor().newInstance();
         } catch (Exception cause) {
             throw new Exception(
                     "Error instantiating instance of custom ResourceFinder " + 

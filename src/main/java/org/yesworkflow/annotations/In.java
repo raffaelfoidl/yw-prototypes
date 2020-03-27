@@ -3,8 +3,6 @@ package org.yesworkflow.annotations;
 import org.yesworkflow.YWKeywords;
 import org.yesworkflow.YWKeywords.Tag;
 
-import java.util.function.Function;
-
 public class In extends Flow {
 
     public In(Long id, Long sourceId, Long lineNumber, String comment) throws Exception {

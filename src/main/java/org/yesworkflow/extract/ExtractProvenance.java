@@ -1,6 +1,7 @@
 package org.yesworkflow.extract;
 
 import org.openprovenance.prov.interop.Formats;
+import org.openprovenance.prov.interop.InteropException;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.xml.InternationalizedString;
@@ -272,7 +273,11 @@ class ExtractProvenance {
     void saveFile() {
         InteropFramework interopFx = new InteropFramework();
         Document provenance = this.createDocument();
-        interopFx.writeDocument(String.join("", this.file, this.fileExtension), this.fileFormat, provenance);
+        try {
+            interopFx.writeDocument(String.join("", this.file, this.fileExtension), this.fileFormat, provenance);
+        } catch (InteropException ex) {
+            System.err.println(String.format("Error while persisting provenance document:\n  %s", ex.getMessage()));
+        }
     }
 
 }
